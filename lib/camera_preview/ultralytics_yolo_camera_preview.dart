@@ -29,7 +29,7 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
   final List<Color> boundingBoxesColorList;
 
   /// The classification overlay widget.
-  final StreamBuilder<List<ClassificationResult?>?>? classificationOverlay;
+  final StreamBuilder<List<dynamic>?>? classificationOverlay;
 
   /// The controller for the camera preview.
   final UltralyticsYoloCameraController controller;
@@ -138,7 +138,8 @@ class _UltralyticsYoloCameraPreviewState
                           }
 
                           return ClassificationResultOverlay(
-                            classificationResults: classificationResults,
+                            classificationResults: classificationResults
+                                as List<ClassificationResult>,
                           );
                         },
                       );
