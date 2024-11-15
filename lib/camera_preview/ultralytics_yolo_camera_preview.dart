@@ -18,6 +18,7 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
     required this.onCameraCreated,
     this.boundingBoxesColorList = const [Colors.lightBlueAccent],
     this.classificationOverlay,
+    this.detectionOverlay,
     this.loadingPlaceholder,
     super.key,
   });
@@ -29,7 +30,8 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
   final List<Color> boundingBoxesColorList;
 
   /// The classification overlay widget.
-  final StreamBuilder<List<dynamic>?>? classificationOverlay;
+  final StreamBuilder<List<ClassificationResult?>?>? classificationOverlay;
+  final StreamBuilder<List<DetectedObject?>?>? detectionOverlay;
 
   /// The controller for the camera preview.
   final UltralyticsYoloCameraController controller;
@@ -106,24 +108,25 @@ class _UltralyticsYoloCameraPreviewState
 
               switch (widget.predictor.runtimeType) {
                 case ObjectDetector:
-                  return StreamBuilder(
-                    stream: (widget.predictor! as ObjectDetector)
-                        .detectionResultStream,
-                    builder: (
-                      BuildContext context,
-                      AsyncSnapshot<List<DetectedObject?>?> snapshot,
-                    ) {
-                      if (snapshot.data == null) return Container();
+                  return widget.detectionOverlay ??
+                      StreamBuilder(
+                        stream: (widget.predictor! as ObjectDetector)
+                            .detectionResultStream,
+                        builder: (
+                          BuildContext context,
+                          AsyncSnapshot<List<DetectedObject?>?> snapshot,
+                        ) {
+                          if (snapshot.data == null) return Container();
 
-                      return CustomPaint(
-                        painter: ObjectDetectorPainter(
-                          snapshot.data! as List<DetectedObject>,
-                          widget.boundingBoxesColorList,
-                          widget.controller.value.strokeWidth,
-                        ),
+                          return CustomPaint(
+                            painter: ObjectDetectorPainter(
+                              snapshot.data! as List<DetectedObject>,
+                              widget.boundingBoxesColorList,
+                              widget.controller.value.strokeWidth,
+                            ),
+                          );
+                        },
                       );
-                    },
-                  );
                 case ImageClassifier:
                   return widget.classificationOverlay ??
                       StreamBuilder(
