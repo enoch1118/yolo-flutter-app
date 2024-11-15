@@ -29,7 +29,7 @@ class UltralyticsYoloCameraPreview extends StatefulWidget {
   final List<Color> boundingBoxesColorList;
 
   /// The classification overlay widget.
-  final BaseClassificationOverlay? classificationOverlay;
+  final StreamBuilder<List<ClassificationResult?>?>? classificationOverlay;
 
   /// The controller for the camera preview.
   final UltralyticsYoloCameraController controller;
